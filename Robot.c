@@ -11,8 +11,7 @@
 int arr[3] = {1, 2, 3};
 
 void moveForward();
-void aturnLeft();
-void aturnRight();
+void turn(char a);
 
 task main(){
 	int index;
@@ -21,10 +20,10 @@ task main(){
 		int a = arr[index];
 		switch(a){
 			case 1:
-				aturnLeft();
+				turn('l');
 				break;
 			case 2:
-				aturnRight();
+				turn('r');
 				break;
 			case 3:
 				moveForward();
@@ -59,16 +58,24 @@ void moveForward(){
 	motor[motorR] = 0;
 }
 
-void aturnLeft(){
-	motor[motorL] = -75;
-	motor[motorR] = 75;
-	wait1Msec(2000);
-}
+// 'l' for left, other for right
+void turn(char a){
+	// object detection
 
-void aturnRight(){
-	motor[motorL] = 75;
-	motor[motorR] = -75;
-	wait1Msec(2000);
+	motor[motorL] = 25;
+	motor[motorR] = 25;
+	wait1Msec(1000); // move a distance (we need to test)
+
+	if(a == 'l'){ // turn
+		motor[motorL] = -75;
+		motor[motorR] = 75;
+	} else {
+		motor[motorL] = 75;
+		motor[motorR] = -75;
+	}
+	wait1Msec(1000);// we need to test this time
+
+	moveForward();
 }
 
 /*
