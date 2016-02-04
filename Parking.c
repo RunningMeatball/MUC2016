@@ -46,20 +46,21 @@ task rightparking()
 	}
 task main()
 	{
-		if (SensorValue(colorSensorA)>60) // Don't know what color blue is. 60 I think?
+		if (SensorValue(colorSensorA) > 60) // Don't know what color blue is. 60 I think?
 		{
 			motor[motorA] = 0;
 			motor[motorB] = 0;
-			startTask leftparking();
+			startTask(leftparking);
 		}
-		else if (SensorValue(colorSensorB) > 60);
+		else if (SensorValue(colorSensorB) > 60)
 		{
 			motor[motorA] = 0;
 			motor[motorB] = 0;
-			startTask rightparking();
+			startTask(rightparking);
 		}
 		else
 		{
 			motor[motorA] = 90; // I don't know normal speed of robot
 			motor[motorB] = 90;
+		}
 	}
