@@ -17,8 +17,10 @@ void turn(char a);
 void circularForward();
 void turnOntoCircular();
 void specialCircular();
+task checkCollision();
 
 task main(){
+	startTask(checkCollision);
 	int index;
 	int length = sizeof(arr) / 2; //divide by 2 for int, divide by 20 for string
 	for(index = 0; index < length - 1; index++){
@@ -135,10 +137,23 @@ void specialCircular(){
 	motor[motorR] = 0;
 }
 
-/*
-bool collision(){
-if(getUSDistance(sensorD) < 10)
-	return true;
-return false;
+task checkCollision(){
+	while(true){
+		wait1Msec(10);
+		if(motor[motorL] == 0 && motor[motorR] == 0){
+			continue;
+		}
+
+		if(SensorValue[sensorD] < 10){
+			suspendTask(main);
+			int l = motor[motorL];
+			int r = motor[motorR];
+			motor[motorL] = 0;
+			motor[motorR] = 0;
+			wait1Msec(2000);
+			motor[motorL] = l;
+			motor[motorR] = r;
+			startTask(main);
+		}
+	}
 }
-*/
