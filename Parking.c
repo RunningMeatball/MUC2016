@@ -8,14 +8,13 @@
 // void leftparking()// did all this assuming motorA is left, motorB is right, colorSensorA is left, colorSensorB is right
 task sonarFunction()
 	{
-		while(1==1)
+		while(true)
 		{
-			motor[motorC] = 45; //estimate
-			nMotorEncoder[motorA] = 0;
-			nMotorEncoderTarget[motorC] = 90;
-			wait1Msec(100);
-			nMotorEncoderTarget[motorC] = -90;
-			wait1Msec(100);
+			setMotorTarget(motorC, 90, 50);
+			waitUntilMotorStop(motorC);
+			setMotorTarget(motorC, -90, -50);
+			waitUntilMotorStop(motorC);
+			motor[motorC] = 0;
 		}
 
 	}
@@ -31,12 +30,11 @@ task leftparking()
 				motor[motorL] = 0;
 				motor[motorR] = 90;
 				wait1Msec(100);
-				nMotorEncoder[motorL] = 0;
-				nMotorEncoder[motorR] = 0;
-				motor[motorL] = 75;
-				motor[motorR] = 75;
-				nMotorEncoderTarget[motorL] = 2122;
-				nMotorEncoderTarget[motorR] = 2122;
+				setMotorTarget(motorL, 2122, 75);
+				setMotorTarget(motorR, 2122, 75);
+				waitUntilMotorStop(motorR);
+				motor[motorL] = 0;
+				motor[motorR] = 0;
 			}
 	}
 task rightparking()
@@ -51,12 +49,11 @@ task rightparking()
 				motor[motorL] = 90;
 				motor[motorR] = 0;
 				wait1Msec(100);
-				nMotorEncoder[motorL] = 0;
-				nMotorEncoder[motorR] = 0;
-				motor[motorL] = 75;
-				motor[motorR] = 75;
-				nMotorEncoderTarget[motorL] = 2122;
-				nMotorEncoderTarget[motorR] = 2122;
+				setMotorTarget(motorL, 2122, 75);
+				setMotorTarget(motorR, 2122, 75);
+				waitUntilMotorStop(motorR);
+				motor[motorL] = 0;
+				motor[motorR] = 0;
 			}
 	}
 task main()
