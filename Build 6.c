@@ -31,178 +31,84 @@ bool sensorOff = false;
 
 
 //Movement Parts
-		//Forward (Left Wheel)
-task leftForward ()
+
+task moveForward()
 {
+	while(redB() <= 10){
 		if (whiteA() <=10 && whiteC() <=10)	//Might become a rough estimation around a certain range
 		{
-			setMotorTarget(motorL,360,50) ;
+			setMotorTarget(motorL,360,50);
+			setMotorTarget(motorR,360,50);
 		}
 		else if (whiteA() >= 10 && blackA() == 7)			//This section needs revist, possible backing up before adjusting
 		{
-		 setMotorTarget(motorL,2,25);
+		 	setMotorTarget(motorL,2,25);
+		 	motor[motorR] = 0;
 		}
 		else (whiteC() >=10 && blackC() == 7);			// So is this
 		{
-		 setMotorTarget(motorL,0,0);
+		 	motor[motorL] = 0;
+		 	setMotorTarget(motorR,3,25);
 		}
+	}
 }
 
-	//Forward(Right Wheel)
-task rightForward ()
+	//Forward Circular Path 1
+task moreForwardLoop ()
 {
-		if (whiteA() <=10 && whiteC() <=10)
-			{
-				setMotorTarget(motorR,360,50) ;
-			}
-		else if (whiteA() >= 10 && blackA() == 7)							//This section needs revist, possible backing up before adjusting
-			{
-			 setMotorTarget(motorR,0,0);
-			}
-		else (whiteC() >= 10 && blackC() == 7);						// So is this
-			{
-			 setMotorTarget(motorR,3,25);
-			}
-}
-
-	//Forward Circular Path 1(Left Wheel)
-task leftForwardLoop ()
-{
+	while(redB() <= 10){
 		if (whiteA() <=10 && whiteC() <=10)
 		{
-			setMotorTarget(motorR,360,50) ;		//Distance requires offset for turning
+			setMotorTarget(motorL,360,50);		//Distance requires offset for turning
+			setMotorTarget(motorR,360,50);
 		}
 		else if (whiteA() >= 10 && blackA() == 7)			//This section needs revist, possible backing up before adjusting
 		{
-		 setMotorTarget(motorL,2,25);
+		 	setMotorTarget(motorL,2,25);
+		 	motor[motorR] = 0;
 		}
 		else (whiteC() >= 10 && blackC() == 7);			// So is this
 		{
-		 setMotorTarget(motorL,0,0);
+		 	motor[motorL] = 0;
+		 	setMotorTarget(motorR,3,25);
 		}
+	}
 }
 
-	//Forward Circular Path 1(Right Wheel)
-task rightForwardLoop ()
+	//Forward Circular Path 2
+task moveForwardSemi ()
 {
-		if (whiteA() <=10 && whiteC() <=10)
-			{
-				setMotorTarget(motorR,360,50) ;		//Distance requires offset for turning
-			}
-		else if (whiteA() >= 10 && blackA() == 7)							//This section needs revist, possible backing up before adjusting
-			{
-			 setMotorTarget(motorR,0,0);
-			}
-		else (whiteC() >= 10 && blackC() == 7);						// So is this
-			{
-			 setMotorTarget(motorR,3,25);
-			}
-}
-
-	//Forward Circular Path 2(Left Wheel)
-task leftForwardSemi ()
-{
+	while(redB() <= 10){
 		if (whiteA() <=10 && whiteC() <=10)
 		{
-			setMotorTarget(motorL,360,50) ;		//Distance requires offset for turning
+			setMotorTarget(motorL,360,50);		//Distance requires offset for turning
+			setMotorTarget(motorR,360,50);
 		}
 		else if (whiteA() >= 10 && blackA() == 7)			//This section needs revist, possible backing up before adjusting
 		{
-		 setMotorTarget(motorL,2,25);
+		 	setMotorTarget(motorL,2,25);
+		 	motor[motorR] = 0;
 		}
 		else (whiteC() >= 10 && blackC() == 7);			// So is this
 		{
-		 setMotorTarget(motorL,0,0);
+		 	motor[motorL] = 0;
+		 	setMotorTarget(motorR,3,25);
 		}
+	}
 }
 
-	//Forward Circular Path 2(Right Wheel)
-task rightForwardSemi ()
-{
-		if (whiteA() <=10 && whiteC() <=10)
-			{
-				setMotorTarget(motorR,360,50) ;		//Distance requires offset for turning
-			}
-		else if (whiteA() >= 10 && blackA() == 7)							//This section needs revist, possible backing up before adjusting
-			{
-			 setMotorTarget(motorR,0,0);
-			}
-		else (whiteC() >= 10 && blackC() == 7);						// So is this
-			{
-			 setMotorTarget(motorR,3,25);
-			}
-}
-
-		//Left Turn (Left wheel)
-task leftLeftTurn ()
+task leftTurn() //Distance require calculation
 {
 	setMotorTarget(motorL,30,25);
-}
-
-		//Left Turn (Right wheel)
-task rightLeftTurn ()
-{
 	setMotorTarget(motorR,90,25);
 }
 
-		//Right Turn (Left wheel)
-task leftRightTurn ()
+task rightTurn() //Distance require calculation
 {
 	setMotorTarget(motorL,90,25);
-}
-
-		//Left Turn (Right wheel)
-task rightRightTurn ()
-{
 	setMotorTarget(motorR,60,25);
 }
 
-
-
-
-//General Movement
-	//Forward Module
- task moveForward (){
-	while (redB() <= 10)
-	{
-		startTask(leftForward);
-		startTask(rightForward);
-	}
-}
-
-	//Circular Path 1 Forward Module
- task moveForwardLoop ()
-{
-	while (redB()<= 10)
-	{
-		startTask(leftForwardLoop);
-		startTask(rightForwardLoop);
-	}
-}
-
-	//Circular Path 2 Forward Module
- task moveForwardSemi ()
-{
-	while (redB()<= 10)
-	{
-		startTask(leftForwardSemi);
-		startTask(rightForwardSemi);
-	}
-}
-
-	//Left Turn
-task leftTurn()	//Distance require calculation
-{
-	startTask(leftLeftTurn);
-	startTask(rightLeftTurn);
-}
-
-	//Right Turn
-task rightTurn		//Distance require calculation
-{
-	startTask(leftRightTurn);
-	startTask(rightRightTurn);
-}
 
 			//Distance sensing module
 task sensor()
