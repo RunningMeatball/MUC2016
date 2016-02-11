@@ -70,12 +70,12 @@ task main(){
 // return true if there is an object
 bool detection(char a){
 	int power, angle;
-	if( a == 'l'){
+	if(a == 'l'){
 		power = 50; // I don't know which way the sensor is going to turn
-		angle = 90;
+		angle = 60;
 	} else {
 		power = -50;
-		angle = -90;
+		angle = -60;
 	}
 	setMotorTarget(motorSonar, angle, power);
 	waitUntilMotorStop(motorSonar);
@@ -202,14 +202,31 @@ void parking(){
 	wait1Msec(200); // wait for the robot to go a little bit forward
 	motor[motorL] = 0;
 	motor[motorR] = 0;
+	stopTask(checkCollision);
 
 	// Turn the sonar sensor and check objects
-	// or turn the robot itself
 	// If there is a robot in the parking lot,
 	// go to the next one.
+	int power, angle;
+	if(a == 1){
+		power = 50; // I don't know which way the sensor is going to turn
+		angle = 90;
+	} else {
+		power = -50;
+		angle = -90;
+	}
+	setMotorTarget(motorSonar, angle, power);
+	waitUntilMotorStop(motorSonar);
+	while(SensorValue[sensorD] < 10){
+		motor[motorL] = 50;
+		motor[motorR] = 50;
+		wait1Msec(500); // we need to test this time
+		motor[motorL] = 0;
+		motor[motorR] = 0;
+	}
+	setMotorTarget(motorSonar, -angle, -power); // turn the sensor back
 
 	// Assume the robot itselt is not turned by this time
-	stopTask(checkCollision);
 	if(a == 1){
 		motor[motorL] = 75;
 		motor[motorR] = -75;
