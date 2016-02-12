@@ -12,18 +12,18 @@
 
 // 1 for turn left, 2 for turn right, 3 for go straight
 // 4 for turn onto a circular path, 5 for move on a circular path
-// 6 for the special circular path ( bottom left )
-int arr[6] = {1, 2, 3, 4, 5, 6};
+int arr[8] = {3, 1, 3, 4, 5, 2, 1, 3};
 
 void moveForward(bool detect, bool isParking);
 void turn(char a, bool isParking);
 void circularForward();
 void turnOntoCircular();
-void specialCircular();
 void parking();
 task checkCollision();
 
 task main(){
+	wait1Msec(100):
+
 	startTask(checkCollision);
 	int index;
 	int length = sizeof(arr) / 2; //divide by 2 for int, divide by 20 for string
@@ -44,9 +44,6 @@ task main(){
 				break;
 			case 5:
 				circularForward();
-				break;
-			case 6:
-				specialCircular();
 				break;
 		}
 	}
@@ -69,13 +66,13 @@ task main(){
 // 'l' for left, other for right
 // return true if there is an object
 bool detection(char a){
-	int power, angle;
+	int power, angle; // The final speed and angle will be about 2/3 of these values due to different radii of gears
 	if(a == 'l'){
-		power = 50; // I don't know which way the sensor is going to turn
-		angle = 60;
+		power = 10; // I don't know which way the sensor is going to turn
+		angle = 45;
 	} else {
-		power = -50;
-		angle = -60;
+		power = -10;
+		angle = -45;
 	}
 	setMotorTarget(motorSonar, angle, power);
 	waitUntilMotorStop(motorSonar);
@@ -97,9 +94,8 @@ void moveForward(bool detect, bool isParking){
 			wait1Msec(2000);
 		}
 	}
-
-	motor[motorL] = 75;
-	motor[motorR] = 75;
+	motor[motorL] = 20;
+	motor[motorR] = 20;
 	wait1Msec(500); // wait for the robot to leave the red line
 
 	if(isParking) return;
@@ -120,26 +116,25 @@ void turn(char a, bool isParking){
 			wait1Msec(2000);
 		}
 	}
-
-	motor[motorL] = 25;
-	motor[motorR] = 25;
-	wait1Msec(1000); // move a distance (we need to test)
+	motor[motorL] = 10;
+	motor[motorR] = 10;
+	wait1Msec(500); // move a distance (we need to test)
 
 	if(a == 'l'){ // turn
-		motor[motorL] = -75;
-		motor[motorR] = 75;
+		motor[motorL] = -20;
+		motor[motorR] = 20;
 	} else {
-		motor[motorL] = 75;
-		motor[motorR] = -75;
+		motor[motorL] = 20;
+		motor[motorR] = -20;
 	}
-	wait1Msec(1000); // we need to test this time
+	wait1Msec(500); // we need to test this time
 
 	moveForward(false, isParking);
 }
 
 void circularForward(){
-	motor[motorL] = 50; // we need to test these numbers
-	motor[motorR] = 75;
+	motor[motorL] = 20; // we need to test these numbers
+	motor[motorR] = 30;
 	wait1Msec(500); // wait for the robot to leave the red line
 
 	while(!(SensorValue[sensorF] >= 58 && SensorValue[sensorF] <= 62)){} // while it is not red
@@ -152,36 +147,15 @@ void turnOntoCircular(){
 		wait1Msec(2000);
 	}
 
-	motor[motorL] = 25;
-	motor[motorR] = 25;
-	wait1Msec(1000); // move a distance (we need to test)
+	motor[motorL] = 10;
+	motor[motorR] = 10;
+	wait1Msec(500); // move a distance (we need to test)
 
-	motor[motorL] = 75;
-	motor[motorR] = -75;
-	wait1Msec(1000); // we need to test this time
+	motor[motorL] = 20;
+	motor[motorR] = -20;
+	wait1Msec(500); // we need to test this time
 
 	circularForward();
-}
-
-void specialCircular(){
-	while(detection('r')){
-		wait1Msec(2000);
-	}
-
-	motor[motorL] = 25;
-	motor[motorR] = 25;
-	wait1Msec(1000); // move a distance (we need to test)
-
-	motor[motorL] = -75;
-	motor[motorR] = 75;
-	wait1Msec(1000); // we need to test this time
-
-	motor[motorL] = 75; // we need to test these numbers
-	motor[motorR] = 60;
-
-	while(!(SensorValue[sensorF] >= 58 && SensorValue[sensorF] <= 62)){} // while it is not red
-	motor[motorL] = 0;
-	motor[motorR] = 0;
 }
 
 // return 0 if blue is not found, 1 if blue is left, 2 if blue is right
@@ -209,17 +183,17 @@ void parking(){
 	// go to the next one.
 	int power, angle;
 	if(a == 1){
-		power = 50; // I don't know which way the sensor is going to turn
+		power = 10; // I don't know which way the sensor is going to turn
 		angle = 90;
 	} else {
-		power = -50;
+		power = -10;
 		angle = -90;
 	}
 	setMotorTarget(motorSonar, angle, power);
 	waitUntilMotorStop(motorSonar);
 	while(SensorValue[sensorD] < 10){
-		motor[motorL] = 50;
-		motor[motorR] = 50;
+		motor[motorL] = 20;
+		motor[motorR] = 20;
 		wait1Msec(500); // we need to test this time
 		motor[motorL] = 0;
 		motor[motorR] = 0;
@@ -228,16 +202,16 @@ void parking(){
 
 	// Assume the robot itselt is not turned by this time
 	if(a == 1){
-		motor[motorL] = 75;
-		motor[motorR] = -75;
+		motor[motorL] = 20;
+		motor[motorR] = -20;
 	} else {
-		motor[motorL] = -75;
-		motor[motorR] = 75;
+		motor[motorL] = -20;
+		motor[motorR] = 20;
 	}
-	wait1Msec(1000); // we need to test this time
+	wait1Msec(500); // we need to test this time
 
-	motor[motorL] = -50;
-	motor[motorR] = -50;
+	motor[motorL] = -20;
+	motor[motorR] = -20;
 	wait1Msec(500);
 	while(!(SensorValue[sensorF] >= 10 && SensorValue[sensorF] <= 14)){} // while the front is not blue
 	motor[motorL] = 0;
