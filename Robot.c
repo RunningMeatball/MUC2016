@@ -116,7 +116,7 @@ void turn(char a, bool isParking){
 			wait1Msec(2000);
 		}
 	}
-	motor[motorL] = 10;
+	motor[motorL] = 10; // angle = 45 * width / radius
 	motor[motorR] = 10;
 	wait1Msec(500); // move a distance (we need to test)
 
