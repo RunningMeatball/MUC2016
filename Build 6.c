@@ -37,40 +37,40 @@ task moveForward()
 	while(redB() <= 10){
 		if (whiteA() <=10 && whiteC() <=10)	//Might become a rough estimation around a certain range
 		{
-			setMotorTarget(motorL,360,50);
-			setMotorTarget(motorR,360,50);
+			moveMotorTarget(motorL,360,50);
+		  moveMotorTarget(motorR,360,50);
 		}
 		else if (whiteA() >= 10 && blackA() == 7)			//This section needs revist, possible backing up before adjusting
 		{
-		 	setMotorTarget(motorL,2,25);
+		 	moveMotorTarget(motorL,2,25);
 		 	motor[motorR] = 0;
 		}
 		else (whiteC() >=10 && blackC() == 7);			// So is this
 		{
 		 	motor[motorL] = 0;
-		 	setMotorTarget(motorR,3,25);
+		 	moveMotorTarget(motorR,3,25);
 		}
 	}
 }
 
 	//Forward Circular Path 1
-task moreForwardLoop ()
+task moveForwardLoop ()
 {
 	while(redB() <= 10){
 		if (whiteA() <=10 && whiteC() <=10)
 		{
-			setMotorTarget(motorL,360,50);		//Distance requires offset for turning
-			setMotorTarget(motorR,360,50);
+			moveMotorTarget(motorL,360,50);		//Distance requires offset for turning
+			moveMotorTarget(motorR,360,50);
 		}
 		else if (whiteA() >= 10 && blackA() == 7)			//This section needs revist, possible backing up before adjusting
 		{
-		 	setMotorTarget(motorL,2,25);
+		 	moveMotorTarget(motorL,2,25);
 		 	motor[motorR] = 0;
 		}
 		else (whiteC() >= 10 && blackC() == 7);			// So is this
 		{
 		 	motor[motorL] = 0;
-		 	setMotorTarget(motorR,3,25);
+		 	moveMotorTarget(motorR,3,25);
 		}
 	}
 }
@@ -81,32 +81,32 @@ task moveForwardSemi ()
 	while(redB() <= 10){
 		if (whiteA() <=10 && whiteC() <=10)
 		{
-			setMotorTarget(motorL,360,50);		//Distance requires offset for turning
-			setMotorTarget(motorR,360,50);
+			moveMotorTarget(motorL,360,50);		//Distance requires offset for turning
+			moveMotorTarget(motorR,360,50);
 		}
 		else if (whiteA() >= 10 && blackA() == 7)			//This section needs revist, possible backing up before adjusting
 		{
-		 	setMotorTarget(motorL,2,25);
+		 	moveMotorTarget(motorL,2,25);
 		 	motor[motorR] = 0;
 		}
 		else (whiteC() >= 10 && blackC() == 7);			// So is this
 		{
 		 	motor[motorL] = 0;
-		 	setMotorTarget(motorR,3,25);
+		 	moveMotorTarget(motorR,3,25);
 		}
 	}
 }
 
 task leftTurn() //Distance require calculation
 {
-	setMotorTarget(motorL,30,25);
-	setMotorTarget(motorR,90,25);
+	moveMotorTarget(motorL,30,25);
+	moveMotorTarget(motorR,90,25);
 }
 
 task rightTurn() //Distance require calculation
 {
-	setMotorTarget(motorL,90,25);
-	setMotorTarget(motorR,60,25);
+	moveMotorTarget(motorL,90,25);
+	moveMotorTarget(motorR,60,25);
 }
 
 
