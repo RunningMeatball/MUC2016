@@ -50,7 +50,7 @@ task rightparking()
 				motor[motorR] = 0;
 				wait1Msec(100);
 				moveMotorTarget(motorL, 2122, 75);
-			  moveMotorTarget(motorR, 2122, 75);
+				moveMotorTarget(motorR, 2122, 75);
 				waitUntilMotorStop(motorR);
 				motor[motorL] = 0;
 				motor[motorR] = 0;
