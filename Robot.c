@@ -9,6 +9,8 @@
 
 // 0 is no color, 1 is black, 2 is blue, 3 is green,
 // 4 is yellow, 5 is red, 6 is white, and 7 is brown
+int BLUE = 2;
+int RED = 5;
 
 // 1 for turn left, 2 for turn right, 3 for go straight
 // 4 for turn onto a circular path, 5 for move on a circular path
@@ -95,7 +97,7 @@ void moveForward(bool detect, bool isParking){
 
 	if(isParking) return;
 
-	while(SensorValue[sensorF] != 5){} // while it is not red
+	while(SensorValue[sensorF] != RED){}
 	motor[motorL] = 0;
 	motor[motorR] = 0;
 }
@@ -132,7 +134,7 @@ void circularForward(){ // The diameter of the circle is about 1/2"
 	motor[motorR] = 30;
 	wait1Msec(500); // wait for the robot to leave the red line
 
-	while(SensorValue[sensorF] != 5){} // while it is not red
+	while(SensorValue[sensorF] != RED){}
 	motor[motorL] = 0;
 	motor[motorR] = 0;
 }
@@ -155,9 +157,9 @@ void turnOntoCircular(){
 
 // return 0 if blue is not found, 1 if blue is left, 2 if blue is right
 int whereIsBlue(){
-	if(SensorValue[sensorL] == 2)
+	if(SensorValue[sensorL] == BLUE)
 		return 1;
-	else if(SensorValue[sensorR] == 2) // may have some issue with parking lot 9 and 10
+	else if(SensorValue[sensorR] == BLUE) // may have some issue with parking lot 9 and 10
 		return 2;
 	else return 0;
 }
@@ -208,7 +210,7 @@ void parking(){
 	motor[motorL] = -20;
 	motor[motorR] = -20;
 	wait1Msec(500);
-	while(SensorValue[sensorF] != 2){} // while the front is not blue
+	while(SensorValue[sensorF] != BLUE){}
 	motor[motorL] = 0;
 	motor[motorR] = 0;
 }
