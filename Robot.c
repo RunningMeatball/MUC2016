@@ -1,6 +1,5 @@
 #pragma config(Sensor, S1,     sensorL,        sensorEV3_Color, modeEV3Color_Color)
 #pragma config(Sensor, S2,     sensorF,        sensorEV3_Color, modeEV3Color_Color)
-#pragma config(Sensor, S3,     sensorR,        sensorEV3_Color, modeEV3Color_Color)
 #pragma config(Sensor, S4,     sensorD,        sensorEV3_Ultrasonic)
 #pragma config(Motor,  motorA,          motorL,        tmotorEV3_Large, PIDControl, driveLeft, encoder)
 #pragma config(Motor,  motorB,          motorR,        tmotorEV3_Large, PIDControl, driveRight, encoder)
@@ -155,21 +154,8 @@ void turnOntoCircular(){
 	circularForward();
 }
 
-// return 0 if blue is not found, 1 if blue is left, 2 if blue is right
-int whereIsBlue(){
-	if(SensorValue[sensorL] == BLUE)
-		return 1;
-	else if(SensorValue[sensorR] == BLUE) // may have some issue with parking lot 9 and 10
-		return 2;
-	else return 0;
-}
-
 void parking(){
-	int a = 0;
-	while(a == 0){
-		wait1Msec(10);
-		a = whereIsBlue();
-	}
+	while(SensorValue[sensorL] != BLUE){}
 	wait1Msec(200); // wait for the robot to go a little bit forward
 	motor[motorL] = 0;
 	motor[motorR] = 0;
@@ -178,14 +164,8 @@ void parking(){
 	// Turn the sonar sensor and check objects
 	// If there is a robot in the parking lot,
 	// go to the next one.
-	int power, angle;
-	if(a == 1){
-		power = 10;
-		angle = 90;
-	} else {
-		power = -10;
-		angle = -90;
-	}
+	int power = 10;
+	int angle = 90;
 	moveMotorTarget(motorSonar, angle, power);
 	waitUntilMotorStop(motorSonar);
 	while(SensorValue[sensorD] < 10){
@@ -198,13 +178,8 @@ void parking(){
 	setMotorTarget(motorSonar, -angle, -power); // turn the sensor back
 
 	// Assume the robot itselt is not turned by this time
-	if(a == 1){
-		motor[motorL] = 20;
-		motor[motorR] = -20;
-	} else {
-		motor[motorL] = -20;
-		motor[motorR] = 20;
-	}
+	motor[motorL] = 20;
+	motor[motorR] = -20;
 	wait1Msec(500); // we need to test this time
 
 	motor[motorL] = -20;
@@ -221,7 +196,6 @@ task checkCollision(){
 		if(motor[motorL] == 0 && motor[motorR] == 0){
 			continue;
 		}
-
 		if(SensorValue[sensorD] < 10){
 			suspendTask(main);
 			int l = motor[motorL];
