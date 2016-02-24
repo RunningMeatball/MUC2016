@@ -8,6 +8,7 @@
 
 int turningPower = 20;
 int turningTime = 1000; // We need to test this time
+int moveTime = 2000; // The time of moving forward during turning
 
 // 0 is no color, 1 is black, 2 is blue, 3 is green,
 // 4 is yellow, 5 is red, 6 is white, and 7 is brown
@@ -61,6 +62,7 @@ int B_FOUR[9] = {1, 1, 3, 1, 3, 3, 3, 1, 3};
 int B_SIX[9] = {1, 1, 3, 1, 3, 1, 3, 3, 1};
 int B_NINE[3] = {1, 1, 3};
 
+void run();
 void moveForward(bool detect, bool isParking);
 void turn(char a, bool isParking);
 void circularForward();
@@ -70,8 +72,12 @@ task checkCollision();
 task adjust();
 
 task main(){
-	parking();
 	wait1Msec(100);
+	parking();
+	run();
+}
+
+void run(){
 	startTask(checkCollision);
 	int index;
 	int length = sizeof(arr) / 2; //divide by 2 for int, divide by 20 for string
@@ -109,6 +115,7 @@ task main(){
 			break;
 	}
 	parking();
+	wait1Msec(4000);
 }
 
 // 'l' for left, other for right
@@ -141,7 +148,7 @@ void moveForward(bool detect, bool isParking){
 	motor[motorL] = 20;
 	motor[motorR] = 20;
 	wait1Msec(500); // wait for the robot to leave the red line
-	//startTask(adjust);
+	startTask(adjust);
 	if(isParking) return;
 
 	while(SensorValue[sensorF] != RED){}
@@ -163,7 +170,7 @@ void turn(char a, bool isParking){
 	}
 	motor[motorL] = 20; // angle = 45 * width / radius
 	motor[motorR] = 20;
-	wait1Msec(2000); // move a distance (we need to test)
+	wait1Msec(moveTime); // move a distance (we need to test)
 
 	if(a == 'l'){ // turn
 		motor[motorL] = -turningPower;
@@ -180,7 +187,7 @@ void circularForward(){ // The diameter of the circle is about 1/2"
 	motor[motorL] = 20; // we need to test these numbers
 	motor[motorR] = 34;
 	wait1Msec(500); // wait for the robot to leave the red line
-	//startTask(adjust);
+	startTask(adjust);
 	while(SensorValue[sensorF] != RED){}
 	motor[motorL] = 0;
 	motor[motorR] = 0;
@@ -191,10 +198,9 @@ void turnOntoCircular(){
 	while(detection('l')){
 		wait1Msec(2000);
 	}
-
 	motor[motorL] = 20;
 	motor[motorR] = 20;
-	wait1Msec(2000); // move a distance (we need to test)
+	wait1Msec(moveTime); // move a distance (we need to test)
 
 	motor[motorL] = turningPower;
 	motor[motorR] = -turningPower;
@@ -203,9 +209,29 @@ void turnOntoCircular(){
 	circularForward();
 }
 
+bool parkingDetection(){
+	bool flag = false;
+	int time = 200;
+	motor[motorL] = -20; // Turn left a little
+	motor[motorR] = 20;
+	wait1Msec(time);
+	motor[motorL] = 0;
+	motor[motorR] = 0;
+	wait1Msec(500);
+	if(SensorValue[sensorD] < 10){
+		flag = true;
+	}
+	motor[motorL] = 20; // Turn the robot back
+	motor[motorR] = -20;
+	wait1Msec(time);
+	motor[motorL] = 0;
+	motor[motorR] = 0;
+	return flag;
+}
+
 void parking(){
-	//while(SensorValue[sensorL] != BLUE){}
-	//wait1Msec(200); // wait for the robot to go a little bit forward
+	while(SensorValue[sensorL] != BLUE){}
+	wait1Msec(200); // wait for the robot to go a little bit forward
 	motor[motorL] = 0;
 	motor[motorR] = 0;
 	stopTask(checkCollision);
@@ -217,22 +243,8 @@ void parking(){
 	int angle = 100;
 	moveMotorTarget(motorSonar, angle, power);
 	waitUntilMotorStop(motorSonar);
-	int d;
-	while(true){
-		motor[motorL] = -20;
-		motor[motorR] = 20;
-		wait1Msec(200);
-		motor[motorL] = 0;
-		motor[motorR] = 0;
-		wait1Msec(500);
-		d = SensorValue[sensorD];
-		motor[motorL] = 20;
-		motor[motorR] = -20;
-		wait1Msec(200);
-		motor[motorL] = 0;
-		motor[motorR] = 0;
-		if(d > 10) break;
-		motor[motorL] = 20;
+	while(parkingDetection()){
+		motor[motorL] = 20; // Move to the next parking lot
 		motor[motorR] = 20;
 		wait1Msec(2000); // we need to test this time
 		motor[motorL] = 0;
@@ -279,7 +291,7 @@ task adjust(){
 		if(motor[motorL] == 0 && motor[motorR] == 0){
 			continue;
 		}
-		if(SensorValue[sensorL] != WHITE){
+		if(SensorValue[sensorL] != WHITE && SensorValue[sensorL] != BLUE){
 			if(SensorValue(sensorL) != BLACK){
 				motor[motorL] += 5;
 				wait1Msec(1000);
