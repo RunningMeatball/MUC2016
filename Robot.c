@@ -19,7 +19,7 @@ int WHITE = 6;
 
 // 1 for turn left, 2 for turn right, 3 for go straight
 // 4 for turn onto a circular path, 5 for move on a circular path
-int arr[6] = {3, 4, 5, 2, 1, 3};
+int arr[] = {3, 4, 5, 2, 1, 3};
 
 int A_ONE[3] = {1, 1, 1};
 int A_THREE[11] = {1, 1, 1, 3, 3, 1, 3, 1, 3, 1, 1};
@@ -73,7 +73,7 @@ task adjust();
 
 task main(){
 	wait1Msec(100);
-	parking();
+	arr = A_ONE;
 	run();
 }
 
@@ -211,7 +211,7 @@ void turnOntoCircular(){
 
 bool parkingDetection(){
 	bool flag = false;
-	int time = 200;
+	int time = 300;
 	motor[motorL] = -20; // Turn left a little
 	motor[motorR] = 20;
 	wait1Msec(time);
@@ -230,8 +230,10 @@ bool parkingDetection(){
 }
 
 void parking(){
+	motor[motorL] = 20;
+	motor[motorR] = 20;
 	while(SensorValue[sensorL] != BLUE){}
-	wait1Msec(200); // wait for the robot to go a little bit forward
+	wait1Msec(400); // wait for the robot to go a little bit forward
 	motor[motorL] = 0;
 	motor[motorR] = 0;
 	stopTask(checkCollision);
@@ -240,7 +242,7 @@ void parking(){
 	// If there is a robot in the parking lot,
 	// go to the next one.
 	int power = 10;
-	int angle = 100;
+	int angle = 90;
 	moveMotorTarget(motorSonar, angle, power);
 	waitUntilMotorStop(motorSonar);
 	while(parkingDetection()){
@@ -250,7 +252,7 @@ void parking(){
 		motor[motorL] = 0;
 		motor[motorR] = 0;
 	}
-	setMotorTarget(motorSonar, -angle, -power); // turn the sensor back
+	moveMotorTarget(motorSonar, -angle, -power); // turn the sensor back
 	waitUntilMotorStop(motorSonar);
 	// Assume the robot itselt is not turned by this time
 	motor[motorL] = turningPower;
@@ -261,6 +263,7 @@ void parking(){
 	motor[motorR] = -20;
 	wait1Msec(1000);
 	while(SensorValue[sensorF] != BLUE){}
+	wait1Msec(200);
 	motor[motorL] = 0;
 	motor[motorR] = 0;
 }
