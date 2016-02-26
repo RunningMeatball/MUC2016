@@ -1,5 +1,5 @@
 #pragma config(Sensor, S1,     sensorL,        sensorLightActive)
-#pragma config(Sensor, S2,     sensorF,        sensorLightActive)
+#pragma config(Sensor, S2,     sensorF,        sensorEV3_Color)
 #pragma config(Sensor, S4,     sensorD,        sensorEV3_Ultrasonic)
 #pragma config(Motor,  motorA,          motorL,        tmotorEV3_Large, PIDControl, driveLeft, encoder)
 #pragma config(Motor,  motorC,          motorSonar,    tmotorEV3_Medium, PIDControl, encoder)
@@ -25,7 +25,7 @@ bool isWhite(int value){
 
 // 1 for turn left, 2 for turn right, 3 for go straight
 // 4 for turn onto a circular path, 5 for move on a circular path
-int arr[] = {3, 4, 5, 2, 1, 3};
+int arr[] = {1, 3};
 
 int A_ONE[3] = {1, 1, 1};
 int A_THREE[11] = {1, 1, 1, 3, 3, 1, 3, 1, 3, 1, 1};
@@ -76,11 +76,25 @@ void turnOntoCircular();
 void parking();
 task checkCollision();
 task adjust();
+task begin();
 
 task main(){
 	wait1Msec(100);
-	arr = A_ONE;
+	startTask(begin);
+	while(true){
+		wait1Msec(1000);
+	}
+}
+
+task begin(){
+	//arr = A_ONE;
 	run();
+	//arr = A_ONE;
+	//run();
+	//arr = A_ONE;
+	//run();
+	//arr = A_ONE;
+	//run();
 }
 
 void run(){
@@ -153,10 +167,9 @@ void moveForward(bool detect, bool isParking){
 	}
 	motor[motorL] = 20;
 	motor[motorR] = 20;
-	wait1Msec(500); // wait for the robot to leave the red line
+	wait1Msec(moveTime); // wait for the robot to leave the red line
 	startTask(adjust);
 	if(isParking) return;
-
 	while(!isRed(SensorValue[sensorF])){}
 	motor[motorL] = 0;
 	motor[motorR] = 0;
@@ -191,7 +204,7 @@ void turn(char a, bool isParking){
 
 void circularForward(){ // The diameter of the circle is about 1/2"
 	motor[motorL] = 20; // we need to test these numbers
-	motor[motorR] = 34;
+	motor[motorR] = 40;
 	wait1Msec(500); // wait for the robot to leave the red line
 	startTask(adjust);
 	while(!isRed(SensorValue[sensorF])){}
@@ -223,7 +236,7 @@ bool parkingDetection(){
 	wait1Msec(time);
 	motor[motorL] = 0;
 	motor[motorR] = 0;
-	wait1Msec(500);
+	wait1Msec(400);
 	if(SensorValue[sensorD] < 10){
 		flag = true;
 	}
@@ -236,8 +249,8 @@ bool parkingDetection(){
 }
 
 void parking(){
-	motor[motorL] = 20;
-	motor[motorR] = 20;
+	//motor[motorL] = 20;
+	//motor[motorR] = 20;
 	while(!isBlue(SensorValue[sensorL])){}
 	wait1Msec(400); // wait for the robot to go a little bit forward
 	motor[motorL] = 0;
@@ -281,7 +294,7 @@ task checkCollision(){
 			continue;
 		}
 		if(SensorValue[sensorD] < 10){
-			suspendTask(main);
+			suspendTask(begin);
 			int l = motor[motorL];
 			int r = motor[motorR];
 			motor[motorL] = 0;
@@ -289,7 +302,7 @@ task checkCollision(){
 			wait1Msec(1000);
 			motor[motorL] = l;
 			motor[motorR] = r;
-			startTask(main);
+			startTask(begin);
 		}
 	}
 }
@@ -302,14 +315,14 @@ task adjust(){
 		}
 		if(!isWhite(SensorValue[sensorL]) && !isBlue(SensorValue[sensorL])){
 			if(!isBlack(SensorValue(sensorL))){
-				motor[motorL] += 5;
+				motor[motorL] += 2;
 				wait1Msec(1000);
-				motor[motorL] -= 5;
+				motor[motorL] -= 2;
 			}
 			else { // (isBlack(SensorValue(SensorL)))
-				motor[motorL] -= 5;
+				motor[motorL] -= 2;
 				wait1Msec(1000);
-				motor[motorL] += 5;
+				motor[motorL] += 2;
 			}
 		}
 	}
